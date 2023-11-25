@@ -139,11 +139,9 @@ force a rebuild. Some might call this a hack but it's actually a widely used mec
 
 ```dart
   @override
-  Widget build(BuildContext context) => MultiProvider(
+  Widget build(BuildContext context) => ListenableProvider(
         key: refreshKey,
-        providers: [
-          ChangeNotifierProvider<ThemeManager>(create: (_) => ThemeManager(widget.prefs)),
-        ],
+        create: (_) => ThemeManager(widget.prefs),
         child: Consumer<ThemeManager>(builder: (context, themeManager, child) {
           return buildApp(themeManager);
         }),
