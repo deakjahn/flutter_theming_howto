@@ -1,7 +1,7 @@
 # How to theme a Flutter app
 
 It's not the only article of its kind, far from it. Still, most of what's availabe on the net simply falls short of the 
-requirements. Either it doesn't offer and easy way for the user to change themes, or it doesn't follow the system theme 
+requirements. Either it doesn't offer an easy way for the user to change themes, or it doesn't follow the system theme 
 changes (maybe it does, after an app restart, but not immediately while running), or doesn't include the system 
 navigation elements, or shows an unsightly flicker during app startup. Or, if it does most everything correctly, it 
 doesn't allow for simple, easy specification of the mai and accent colors.
