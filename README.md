@@ -4,16 +4,16 @@ It's not the only article of its kind, far from it. Still, most of what's availa
 requirements. Either it doesn't offer an easy way for the user to change themes, or it doesn't follow the system theme 
 changes (maybe it does, after an app restart, but not immediately while running), or doesn't include the system 
 navigation elements, or shows an unsightly flicker during app startup. Or, if it does most everything correctly, it 
-doesn't allow for simple, easy specification of the mai and accent colors.
+doesn't allow for simple, easy specification of the main and accent colors.
 
 So, let me introduce my solution that I built up during many years of flutter development and now I copy from app to app 
 when I need to start a new one. It will span a few classes for sure, still, I think, when all is coming together, it's 
-relative simple for what it can accomplish and it really offers all necessary features while still remains 
+relatively simple for what it can accomplish and it really offers all necessary features while still remains 
 straightforward to customize.
 
 In the background, this approach doesn't introduce any new concepts, it just uses the underlying theming mechanism 
 Flutter offers. Most importantly, it relies on a provider to inject the necessary information into the app build 
-process. So, let's introduce this provider first,
+process. So, let's introduce this provider first:
 
 ## ThemeManager
 
@@ -79,7 +79,7 @@ for instance, light and the app is set to dark. It would start in light mode and
 
 ## The app
 
-So, let's examine the app itself. It will be more or less the same as any usual Flutter app, but with a couple subtle 
+So, let's examine the app itself. It will be more or less the same as any usual Flutter app, but with a couple of subtle 
 differences. First, we will have an async `main()`. Note that we need to ensure the proper initialization of the
 Flutter bindings before we can use anything async:
 
@@ -177,8 +177,8 @@ This is where the fun begins. First, we set up two base themes, one light and on
 seed color. Flutter has a nice way to create a whole color palette from just a single color, creating all variations, 
 lighter and darker versions, contrasting colors, everything. You might also specify the primary, or the secondary, or 
 even the tertiary color but my recommendation would be to provide as little as possible. All apps differ, of course, but 
-my usual way is to give a primary because I often want to have a specific one rather than the one generated from the 
-seed, and maybe a secondary if the design calls for a specific secondary accents. I prefer to leave everything else to 
+my usual way is to specify a primary because I often want to have a specific one rather than the one generated from the 
+seed, and maybe a secondary if the design calls for specific secondary accents. I prefer to leave everything else to 
 the underlying platform code because if you start to go any deeper, you usually open a can of worms and some 
 combinations will not be contrasting or pleasing enough. But it's up to you, of course.
 
@@ -205,7 +205,7 @@ class AppTheme {
 
 This is just the starting point. The next item will be a helper function that starts with a scheme and provides the 
 actual theming for the various elements of the design. The next bock is just an arbitrary sample from one of my apps. 
-`ThemeData` has a huge list of supported fields, one for every conceivable UI control. The same applies here: use is 
+`ThemeData` has a huge list of supported fields, one for every conceivable UI control. The same principle applies here: use it 
 sparingly. Always check what the default offers and only specify your own theme if you need to deviate from the default. 
 And even where you do, try to always use existing colors from the `scheme` rather than providing your own, ad hoc colors.
 
@@ -264,7 +264,7 @@ And even where you do, try to always use existing colors from the `scheme` rathe
 
 Basically, that's it. You have a themed app that gets its color palette automatically from a few provided base colors, 
 spreads its centralized theming to all the widgets used throughout the app to ensure a consistent look. It reacts to the 
-system theme change automatically, on the fly. It starts perfectly, without flickering. The only element still missig is
+system theme change automatically, on the fly. It starts perfectly, without flickering. The only element still missing is
 a way for the user to change the theming at will.
 
 ## User settings
