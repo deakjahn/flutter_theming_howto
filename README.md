@@ -294,7 +294,7 @@ class SettingsPage extends StatefulWidget {
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
-```dart
+```
 
 with a simple assignment:
 
