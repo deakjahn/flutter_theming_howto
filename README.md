@@ -266,7 +266,10 @@ And even where you do, try to always use existing colors from the `scheme` rathe
 Basically, that's it. You have a themed app that gets its color palette automatically from a few provided base colors, 
 spreads its centralized theming to all the widgets used throughout the app to ensure a consistent look. It reacts to the 
 system theme change automatically, on the fly. It starts perfectly, without flickering. The only element still missing is
-a way for the user to change the theming at will.
+a way for the user to change the theme at will.
+
+You're not limited to the two base themes. You can create as many as you like if you allow the user to select and
+you modify `ThemeManager` to always provide the current one.
 
 ## User settings
 
