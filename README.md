@@ -73,12 +73,12 @@ class ThemeManager with ChangeNotifier {
 ```
 
 Note that it gets the `SharedPreferences` instance from outside. This might seem odd, why it doesn't read the instance 
-itself, setting the variable in a `then()` callback and notifies the listeners then? That would be the proper way, 
+itself, setting any variable in a `then()` callback and notifying the listeners when that's done? That would be the proper way, 
 wouldn't it?
 
-Well, maybe, from a purist point of view, yes. But doing so would mean a flicker during app startup if the system is, 
-for instance, light and the app is set to dark. It would start in light mode and change to dark immediately as the 
-`ThemeManager` reads the proper theme in an async way. We have to avoid this.
+Well, maybe, from a purist point of view, yes. I would do so with any other settings. But doing the same here would mean a flicker
+during app startup if the system is, for instance, light and the app is set to dark. It would start in light mode and change to dark
+shortly as the `ThemeManager` reads the proper theme in an async way. We have to avoid this.
 
 ## The app
 
