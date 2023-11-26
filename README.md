@@ -13,7 +13,10 @@ straightforward to customize.
 
 In the background, this approach doesn't introduce any new concepts, it just uses the underlying theming mechanism 
 Flutter offers. Most importantly, it relies on a provider to inject the necessary information into the app build 
-process. So, let's introduce this provider first:
+process. Also, it would be fairly simple to adapt to other state management solutions, eg. Riverpod or plain old
+`InheritedWidget` or `ListenableBuilder`.
+
+So, let's introduce this provider first:
 
 ## ThemeManager
 
