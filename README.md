@@ -8,7 +8,7 @@ doesn't allow for simple, easy specification of the main and accent colors.
 
 So, let me introduce my solution that I built up during many years of flutter development and now I copy from app to app 
 when I need to start a new one. It will span a few classes for sure, still, I think, when all is coming together, it's 
-relatively simple for what it can accomplish and it really offers all necessary features while still remains 
+relatively simple for what it can accomplish and it really offers all the necessary features while it still remains 
 straightforward to customize.
 
 In the background, this approach doesn't introduce any new concepts, it just uses the underlying theming mechanism 
@@ -84,7 +84,7 @@ shortly as the `ThemeManager` reads the proper theme in an async way. We have to
 
 So, let's examine the app itself. It will be more or less the same as any usual Flutter app, but with a couple of subtle 
 differences. First, we will have an async `main()`. Note that we need to ensure the proper initialization of the
-Flutter bindings before we can use anything async:
+Flutter bindings before we can use a plugin:
 
 ```dart
 void main() async {
