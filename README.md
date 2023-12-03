@@ -6,7 +6,7 @@ changes (maybe it does, after an app restart, but not immediately while running)
 navigation elements, or shows an unsightly flicker during app startup. Or, if it does most everything correctly, it 
 doesn't allow for simple, easy specification of the main and accent colors.
 
-So, let me introduce my solution that I built up during many years of flutter development and now I copy from app to app 
+So, let me introduce my solution that I built up during many years of Flutter development and now I copy from app to app 
 when I need to start a new one. It will span a few classes for sure, still, I think, when all is coming together, it's 
 relatively simple for what it can accomplish and it really offers all the necessary features while it still remains 
 straightforward to customize.
