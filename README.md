@@ -204,11 +204,11 @@ class AppTheme {
   AppTheme._();
 ```
 
-This is just the starting point. The next item will be a helper function that starts with a scheme and provides the 
-actual theming for the various elements of the design. The next bock is just an arbitrary sample from one of my apps. 
-`ThemeData` has a huge list of supported fields, one for every conceivable UI control. The same principle applies here: use it 
-sparingly. Always check what the default offers and only specify your own theme if you need to deviate from the default. 
-And even where you do, try to always use existing colors from the `scheme` rather than providing your own, ad hoc colors.
+This is just the starting point. The next item will be a helper function that starts with a color scheme and provides the 
+actual theming for the various elements of the design. `ThemeData` has a huge list of supported fields, one for every
+conceivable UI control. The same principle applies here: use it sparingly. Always check what the default offers and only
+specify your own theme if you need to deviate from the default. And even where you do, try to always use existing colors
+from the `scheme` rather than providing your own, ad hoc colors.
 
 ```dart
   static ThemeData fullTheme(Brightness brightness, ColorScheme scheme) => ThemeData(
