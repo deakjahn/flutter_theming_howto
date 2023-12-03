@@ -274,7 +274,7 @@ you modify `ThemeManager` to always provide the current one.
 ## User settings
 
 Creating a settings page is beyond the scope of this article—you'll find plenty of examples on the web everywhere. But once you have one,
-be sure to include a selection for the user to select from three options:
+be sure to include a selection for the user to select from your options:
 
 ```dart
   Map<String, String> _THEMES(BuildContext context) {
