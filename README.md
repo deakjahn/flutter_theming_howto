@@ -73,7 +73,7 @@ class ThemeManager with ChangeNotifier {
 ```
 
 Note that it gets the `SharedPreferences` instance from outside. This might seem odd, why it doesn't read the instance 
-itself, setting any variable in a `then()` callback and notifying the listeners when that's done? That would be the proper way, 
+itself, setting any variables in a `then()` callback and notifying the listeners when that's done? That would be the proper way, 
 wouldn't it?
 
 Well, maybe, from a purist point of view, yes. I would do so with any other settings. But doing the same here would mean a flicker
