@@ -305,12 +305,15 @@ When you specify your theme in the `fullTheme()` described above, add an extra i
 and use the `fromSeed()` approach to harness the power of the underlying color calculations:
 
 ```dart
-extensions: [
-  AppColors(
-    color1: ColorScheme.fromSeed(brightness: brightness, seedColor: Colors.red).secondaryContainer,
-    color2: ColorScheme.fromSeed(brightness: brightness, seedColor: Colors.red).onSecondaryContainer,
-  ),
-],
+static ThemeData fullTheme(Brightness brightness, ColorScheme scheme) => ThemeData(
+        //...
+        extensions: [
+          AppColors(
+            color1: ColorScheme.fromSeed(brightness: brightness, seedColor: Colors.red).secondaryContainer,
+            color2: ColorScheme.fromSeed(brightness: brightness, seedColor: Colors.red).onSecondaryContainer,
+          ),
+        ],
+      );
 ```
 
 Later on, when you want to use these colors, they will be near the usual place:
