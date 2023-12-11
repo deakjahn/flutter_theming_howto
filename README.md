@@ -271,6 +271,56 @@ a way for the user to change the theme at will.
 You're not limited to the two base themes. You can create as many as you like if you allow the user to select and
 you modify `ThemeManager` to always provide the current one.
 
+## Custom colors
+
+Sometimes you might even need extra colors. As with the base ones, this is best left to the system that can start with
+a seed, create variations based on lightness and ensure good contrast between foreground and background. Flutter's
+theming engine allows us to specify extensions to the stock items:
+
+```dart
+class AppColors extends ThemeExtension<AppColors> {
+  final Color? color1;
+  final Color? color2;
+
+  AppColors({required this.color1, required this.color2});
+
+  @override
+  ThemeExtension<AppColors> copyWith({Color? color1, Color? color2}) => AppColors(
+        color1: color1 ?? this.color1,
+        color2: color2 ?? this.color2,
+      );
+
+  @override
+  ThemeExtension<AppColors> lerp(covariant ThemeExtension<AppColors>? other, double t) {
+    if (other is! AppColors) return this;
+    return AppColors(
+      color1: Color.lerp(color1, other.color1, t),
+      color2: Color.lerp(color2, other.color2, t),
+    );
+  }
+}
+```
+
+When you specify your theme in the `fullTheme()` described above, add an extra item to the list of theme items
+and use the `fromSeed()` approach to harness the power of the underlying color calculations:
+
+```dart
+extensions: [
+  AppColors(
+    color1: ColorScheme.fromSeed(brightness: brightness, seedColor: Colors.red).secondaryContainer,
+    color2: ColorScheme.fromSeed(brightness: brightness, seedColor: Colors.red).onSecondaryContainer,
+  ),
+],
+```
+
+Later on, when you want to use these colors, they will be near the usual place:
+
+```dart
+Theme.of(context).extension<AppColors>()!.color1
+```
+
+Note that you can have more than one color extension, if required, differentiated by the type you ask for.
+
 ## User settings
 
 Creating a settings page is beyond the scope of this article—you'll find plenty of examples on the web everywhere. But once you have one,
