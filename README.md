@@ -327,7 +327,10 @@ Note that you can have more than one color extension, if required, differentiate
 ## Alternative with custom accent color
 
 The question of user cutomizable accent color came up in one of may apps recently. It's easy to modify the approach above
-to handle that case as well. Move everything from the app into the theme manager:
+to handle that case as well. Move everything from the app into the theme manager. Themes are no longer fixed and static
+but created and recreated from the custom accent color. Provide the user with a color picker and when they select a new color,
+just store it into `widget.theming.accentColor` or whatever other solution you use to provide the manager to your app.
+This sample also shows how you can calculate a different shade of the same color for your secondary.
 
 ```dart
 class ThemeManager with ChangeNotifier {
