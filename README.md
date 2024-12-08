@@ -324,6 +324,113 @@ Theme.of(context).extension<AppColors>()!.color1
 
 Note that you can have more than one color extension, if required, differentiated by the type you ask for.
 
+## Alternative with custom accent color
+
+The question of user cutomizable accent color came up in one of may apps recently. It's easy to modify the approach above
+to handle that case as well. Move everything from the app into the theme manager:
+
+```dart
+class ThemeManager with ChangeNotifier {
+  final SharedPreferences prefs;
+  var brightness = Brightness.light;
+  String _theme = 'system';
+  Color _accentColor = Colors.indigo;
+  ThemeData _lightTheme = ThemeData.light(useMaterial3: true);
+  ThemeData _darkTheme = ThemeData.dark(useMaterial3: true);
+  SystemUiOverlayStyle _lightSystemStyle = SystemUiOverlayStyle.light;
+  SystemUiOverlayStyle _darkSystemStyle = SystemUiOverlayStyle.dark;
+
+  ThemeManager(this.prefs) {
+    brightness = PlatformDispatcher.instance.platformBrightness;
+    _theme = prefs.getString('theme') ?? 'system';
+    _accentColor = Color(prefs.getInt('accent_color') ?? Colors.indigo.value);
+    _createThemes();
+    notifyListeners();
+  }
+
+  ThemeData get light => _lightTheme; //
+  ThemeData get dark => _darkTheme; //
+  SystemUiOverlayStyle get systemStyle => (themeMode == ThemeMode.light) ? _lightSystemStyle : _darkSystemStyle;
+
+  String get theme => _theme;
+
+  set theme(String value) {
+    prefs.setString('theme', _theme = value);
+    notifyListeners();
+  }
+
+  ThemeMode get themeMode => switch (_theme) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        'system' => (brightness == Brightness.light) ? ThemeMode.light : ThemeMode.dark,
+        _ => ThemeMode.light,
+      };
+
+  Color get accentColor => _accentColor;
+
+  set accentColor(Color value) {
+    _accentColor = value;
+    prefs.setInt('accent_color', value.value);
+    _createThemes();
+    notifyListeners();
+  }
+
+  void _createThemes() {
+    final hslAccentColor = HSLColor.fromColor(_accentColor);
+    final hslShadeColor = HSLColor.fromAHSL(1, hslAccentColor.hue, hslAccentColor.saturation, (hslAccentColor.lightness * 1.25).clamp(0, 1));
+
+    final lightBase = ColorScheme.fromSeed(
+      brightness: Brightness.light,
+      seedColor: _accentColor,
+      primary: _accentColor,
+      secondary: hslShadeColor.toColor(),
+      surface: Colors.white,
+      scrim: Colors.white38,
+    );
+    _lightTheme = _fullTheme(Brightness.light, lightBase);
+    _lightSystemStyle = SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: Colors.white,
+      systemNavigationBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarIconBrightness: Brightness.light,
+    );
+
+    final darkBase = ColorScheme.fromSeed(
+      brightness: Brightness.dark,
+      seedColor: _accentColor,
+      primary: _accentColor,
+      secondary: hslShadeColor.toColor(),
+      surface: Colors.black,
+      scrim: Colors.black38,
+    );
+    _darkTheme = _fullTheme(Brightness.dark, darkBase);
+    _darkSystemStyle = SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: Colors.black,
+      systemNavigationBarColor: Colors.black,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    );
+  }
+
+  ThemeData _fullTheme(Brightness brightness, ColorScheme scheme) => ThemeData(
+        // ...
+        extensions: [_extraColors(brightness)],
+        cupertinoOverrideTheme: _macTheme(brightness, scheme),
+      );
+
+  CupertinoThemeData _macTheme(Brightness brightness, ColorScheme scheme) => CupertinoThemeData(
+        // ...
+      );
+
+  ThemeColors _extraColors(Brightness brightness) {
+    return ThemeColors(
+      color1: ...,
+      color2: ...,
+    );
+  }
+}
+```
+
 ## User settings
 
 Creating a settings page is beyond the scope of this article—you'll find plenty of examples on the web everywhere. But once you have one,
