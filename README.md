@@ -178,7 +178,7 @@ This is where the fun begins. First, we set up two base themes, one light and on
 seed color. Flutter has a nice way to create a whole color palette from just a single color, creating all variations, 
 lighter and darker versions, contrasting colors, everything. You might also specify the primary, or the secondary, or 
 even the tertiary color but my recommendation would be to provide as little as possible. All apps differ, of course, but 
-my usual way is to specify a primary because I often want to have a specific one rather than the one generated from the 
+I sometimes specify a primary because I want to have a specific one rather than the one generated from the 
 seed, and maybe a secondary if the design calls for specific secondary accents. I prefer to leave everything else to 
 the underlying platform code because if you start to go any deeper, you usually open a can of worms and some 
 combinations will not be contrasting or pleasing enough. But it's up to you, of course.
@@ -188,15 +188,15 @@ combinations will not be contrasting or pleasing enough. But it's up to you, of 
 class AppTheme {
   static var lightBase = ColorScheme.fromSeed(
     brightness: Brightness.light,
+    dynamicSchemeVariant: DynamicSchemeVariant.content,
     seedColor: Colors.red,
-    primary: Colors.red,
     secondary: Colors.orange.shade600,
     background: Colors.white,
   );
   static var darkBase = ColorScheme.fromSeed(
     brightness: Brightness.dark,
+    dynamicSchemeVariant: DynamicSchemeVariant.content,
     seedColor: Colors.red,
-    primary: Colors.red,
     secondary: Colors.orange.shade600,
     background: Colors.black,
   );
@@ -379,14 +379,10 @@ class ThemeManager with ChangeNotifier {
   }
 
   void _createThemes() {
-    final hslAccentColor = HSLColor.fromColor(_accentColor);
-    final hslShadeColor = HSLColor.fromAHSL(1, hslAccentColor.hue, hslAccentColor.saturation, (hslAccentColor.lightness * 1.25).clamp(0, 1));
-
     final lightBase = ColorScheme.fromSeed(
       brightness: Brightness.light,
+      dynamicSchemeVariant: DynamicSchemeVariant.content,
       seedColor: _accentColor,
-      primary: _accentColor,
-      secondary: hslShadeColor.toColor(),
       surface: Colors.white,
       scrim: Colors.white38,
     );
@@ -400,9 +396,8 @@ class ThemeManager with ChangeNotifier {
 
     final darkBase = ColorScheme.fromSeed(
       brightness: Brightness.dark,
+      dynamicSchemeVariant: DynamicSchemeVariant.content,
       seedColor: _accentColor,
-      primary: _accentColor,
-      secondary: hslShadeColor.toColor(),
       surface: Colors.black,
       scrim: Colors.black38,
     );
