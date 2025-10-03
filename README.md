@@ -100,7 +100,7 @@ navigation bar colors on earlier phones:
 void main() async {
   WidgetsBinding.instance.deferFirstFrame();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  runApp(MyApp(prefs: await SharedPreferences.getInstance()));
+  runApp(MyApp());
 }
 ```
 
@@ -177,6 +177,26 @@ Anyway, our `build()` will provide the theme manager, keyed with this unique key
 
 We have four points of interest here: we supply the actual theme from the `ThemeManager`, as well as the system styles 
 (status and navigation bars). And we also provide our actual themes for the system to chose from: two `AppTheme` variants.
+
+## Starting the display on the next frame
+
+Use the usual solution to defer execution to the next frame and allow the deferred display there. You can inject `theming`
+into our own pages directly or use `context.read<T>` (or the service of a different provider package):
+
+```dart
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((ctx) {
+      if (mounted) {
+        final theming = ctx.read<ThemeManager>();
+        SystemChrome.setSystemUIOverlayStyle(theming.systemStyle);
+        WidgetsBinding.instance.allowFirstFrame();
+      }
+    });
+  }
+```
 
 ## The actual theming
 
