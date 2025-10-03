@@ -181,7 +181,7 @@ We have four points of interest here: we supply the actual theme from the `Theme
 ## Starting the display on the next frame
 
 Use the usual solution to defer execution to the next frame and allow the deferred display there. You can inject `theming`
-into our own pages directly or use `context.read<T>` (or the service of a different provider package):
+into your own pages directly or use `context.read<T>` (or the service of a different provider package):
 
 ```dart
   @override
