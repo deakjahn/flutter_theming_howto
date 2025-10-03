@@ -32,13 +32,17 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeManager with ChangeNotifier {
-  final SharedPreferences prefs;
+  final prefs = SharedPreferencesAsync();
   var brightness = Brightness.light;
   String _theme = 'system';
 
-  ThemeManager(this.prefs) {
+  ThemeManager() {
     brightness = ui.PlatformDispatcher.instance.platformBrightness;
-    _theme = prefs.getString('theme') ?? 'system';
+    setup();
+  }
+
+  Future<void> setup() async {
+    _theme = await prefs.getString('theme') ?? 'system';
     notifyListeners();
   }
 
@@ -58,51 +62,53 @@ class ThemeManager with ChangeNotifier {
 
   SystemUiOverlayStyle get systemStyle => (themeMode == ThemeMode.light) //
       ? SystemUiOverlayStyle.light.copyWith(
-          statusBarColor: Colors.white,
-          systemNavigationBarColor: Colors.white,
+          statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.light,
-          systemNavigationBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          systemNavigationBarContrastEnforced: true,
         )
       : SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: Colors.black,
-          systemNavigationBarColor: Colors.black,
+          statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.light,
+          systemNavigationBarContrastEnforced: true,
+        );
+
+  SystemUiOverlayStyle get fixedStyle => (themeMode == ThemeMode.light) //
+      ? SystemUiOverlayStyle.light.copyWith(
+          systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.dark,
+          systemNavigationBarContrastEnforced: false,
+        )
+      : SystemUiOverlayStyle.dark.copyWith(
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.light,
+          systemNavigationBarContrastEnforced: false,
         );
 }
 ```
 
-Note that it gets the `SharedPreferences` instance from outside. This might seem odd, why it doesn't read the instance 
-itself, setting any variables in a `then()` callback and notifying the listeners when that's done? That would be the proper way, 
-wouldn't it?
-
-Well, maybe, from a purist point of view, yes. I would do so with any other settings. But doing the same here would mean a flicker
-during app startup if the system is, for instance, light and the app is set to dark. It would start in light mode and change to dark
-shortly as the `ThemeManager` reads the proper theme in an async way. We have to avoid this.
-
 ## The app
 
 So, let's examine the app itself. It will be more or less the same as any usual Flutter app, but with a couple of subtle 
-differences. First, we will have an async `main()`. Note that we need to ensure the proper initialization of the
-Flutter bindings before we can use a plugin:
+differences. We suppress the display for the very first frame — this will be important to stabilize the status and
+navigation bar colors on earlier phones:
 
 ```dart
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding.instance.deferFirstFrame();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(MyApp(prefs: await SharedPreferences.getInstance()));
 }
 ```
-
-This is exactly where we get the preferences in a syncish way and only start the app when we already have it. Fortunately,
-even if it's technically async, it's rather fast.
 
 Second, our app will be stateful, not stateless, as most examples and samples would show:
 
 ```dart
 class MyApp extends StatefulWidget {
-  final SharedPreferences prefs;
-
-  const MyApp({super.key, required this.prefs});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -334,7 +340,7 @@ This sample also shows how you can calculate a different shade of the same color
 
 ```dart
 class ThemeManager with ChangeNotifier {
-  final SharedPreferences prefs;
+  final prefs = SharedPreferencesAsync();
   var brightness = Brightness.light;
   String _theme = 'system';
   Color _accentColor = Colors.indigo;
@@ -343,8 +349,12 @@ class ThemeManager with ChangeNotifier {
   SystemUiOverlayStyle _lightSystemStyle = SystemUiOverlayStyle.light;
   SystemUiOverlayStyle _darkSystemStyle = SystemUiOverlayStyle.dark;
 
-  ThemeManager(this.prefs) {
-    brightness = PlatformDispatcher.instance.platformBrightness;
+  ThemeManager() {
+    brightness = ui.PlatformDispatcher.instance.platformBrightness;
+    setup();
+  }
+
+  Future<void> setup() async {
     _theme = prefs.getString('theme') ?? 'system';
     _accentColor = Color(prefs.getInt('accent_color') ?? Colors.indigo.value);
     _createThemes();
@@ -388,10 +398,11 @@ class ThemeManager with ChangeNotifier {
     );
     _lightTheme = _fullTheme(Brightness.light, lightBase);
     _lightSystemStyle = SystemUiOverlayStyle.light.copyWith(
-      statusBarColor: Colors.white,
-      systemNavigationBarColor: Colors.white,
+      statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarContrastEnforced: true,
     );
 
     final darkBase = ColorScheme.fromSeed(
@@ -403,10 +414,11 @@ class ThemeManager with ChangeNotifier {
     );
     _darkTheme = _fullTheme(Brightness.dark, darkBase);
     _darkSystemStyle = SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Colors.black,
-      systemNavigationBarColor: Colors.black,
+      statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarContrastEnforced: true,
     );
   }
 
